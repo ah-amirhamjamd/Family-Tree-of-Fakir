@@ -244,7 +244,35 @@
   }
   .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
   .avatar.big{ width:88px; height:88px; font-size:34px; border:2.5px solid var(--gold); }
-
+/* ---------- পরিসংখ্যান ---------- */
+#statsOverlay{ position:fixed; inset:0; background:rgba(38,48,31,0.3); z-index:55; display:none; }
+#statsOverlay.open{ display:block; }
+#statsModal{
+  position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+  width:min(880px,94vw); max-height:88vh; overflow-y:auto;
+  background:var(--card); border:1.5px solid var(--line); border-radius:16px;
+  box-shadow:0 20px 50px rgba(38,48,31,0.3);
+  padding:24px 24px 20px; z-index:60; display:none;
+}
+#statsModal.open{ display:block; }
+#statsModal .close-btn{
+  position:absolute; top:14px; right:18px; background:none; border:none;
+  font-size:20px; color:var(--leaf-soft); cursor:pointer; line-height:1;
+}
+#statsModal .close-btn:hover{ color:var(--clay); }
+#statsModal h2{ font-size:20px; color:var(--trunk); margin:0 0 14px; }
+.st-cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(110px,1fr)); gap:10px; margin-bottom:16px; }
+.st-card{ background:var(--paper); border:1px solid var(--line); border-radius:10px; padding:12px 8px; text-align:center; }
+.st-num{ font-size:26px; font-weight:700; color:var(--trunk); line-height:1.2; }
+.st-label{ font-size:12px; color:var(--leaf-soft); margin-top:2px; }
+.st-note{ font-size:12px; color:var(--leaf-soft); line-height:1.7; margin:0 0 10px; }
+.st-table-wrap{ overflow-x:auto; border:1px solid var(--line); border-radius:10px; }
+.st-table{ border-collapse:collapse; width:100%; min-width:640px; font-size:13px; }
+.st-table th, .st-table td{ padding:8px 10px; text-align:center; border-bottom:1px solid var(--paper-deep); white-space:nowrap; }
+.st-table th{ background:var(--paper-deep); color:var(--trunk); font-weight:600; }
+.st-table td:first-child{ text-align:left; font-weight:600; }
+.st-table tr.st-total td{ background:var(--paper); font-weight:700; color:var(--gold); border-bottom:none; }
+  
   /* ---------- মোবাইল ---------- */
   @media (max-width:768px){
     header{ padding:10px 12px; }
@@ -279,6 +307,7 @@
     <button class="btn" id="collapseAll">সব বন্ধ করুন</button>
     <button class="btn" id="resetView">মাঝে আনুন</button>
     <button class="btn" id="openCredits">সম্পাদক ও তথ্যদাতা</button>
+    <button class="btn" id="openStats">পরিসংখ্যান</button>
   </div>
 </header>
 
@@ -319,7 +348,13 @@
   <h3>তথ্যদাতা</h3>
   <div id="cr-contributors"></div>
 </div>
-
+<div id="statsOverlay"></div>
+<div id="statsModal" role="dialog" aria-modal="true" aria-labelledby="st-title">
+  <button class="close-btn" id="closeStats" aria-label="বন্ধ করুন">✕</button>
+  <h2 id="st-title">বংশের পরিসংখ্যান</h2>
+  <div id="st-body"></div>
+</div>
+  
 <!-- আপনার সব তথ্য (familyData, siteCredits, siteSettings) এই ফাইলে থাকে -->
 <script src="data.js"></script>
 <script>
@@ -846,6 +881,104 @@ document.getElementById("openCredits").addEventListener("click", openCredits);
 document.getElementById("closeCredits").addEventListener("click", closeCredits);
 creditsOverlay.addEventListener("click", closeCredits);
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeCredits(); hideDetail(); } });
+
+/* ========================= পরিসংখ্যান ========================= */
+// false করলে "অজানা / নাম জানা নেই / 👨 / 👩" ধরনের এন্ট্রি হিসাবের বাইরে থাকবে
+const INCLUDE_UNKNOWN_NAMES = true;
+
+function isUnknownName(name) {
+  return /(জানা|জনা)\s*নেই|^\s*(👨|👩)|^\s*অজানা\s*$/.test(name || "");
+}
+
+function computeStats() {
+  const blank = () => ({ total:0, alive:0, dead:0, male:0, female:0, other:0,
+    maleAlive:0, femaleAlive:0, maleDead:0, femaleDead:0 });
+  const all = blank();
+  const byGen = new Map();
+  let unknownCount = 0;
+
+  allNodes.forEach(d => {
+    const unknown = isUnknownName(d.data.name);
+    if (unknown) unknownCount++;
+    if (unknown && !INCLUDE_UNKNOWN_NAMES) return;
+
+    const gen = genNumber(d);
+    if (!byGen.has(gen)) byGen.set(gen, blank());
+    const dead = !!d.data.death;   // মৃত্যুর তথ্য থাকলেই মৃত (গাছের নিয়মের মতোই)
+    const sex = d.data.gender === "male" ? "male" : d.data.gender === "female" ? "female" : "other";
+
+    [all, byGen.get(gen)].forEach(s => {
+      s.total++;
+      s[sex]++;
+      if (dead) s.dead++; else s.alive++;
+      if (sex === "male")   { if (dead) s.maleDead++;   else s.maleAlive++; }
+      if (sex === "female") { if (dead) s.femaleDead++; else s.femaleAlive++; }
+    });
+  });
+
+  return { all, gens: Array.from(byGen.entries()).sort((a, b) => a[0] - b[0]), unknownCount };
+}
+
+function renderStats() {
+  const { all, gens, unknownCount } = computeStats();
+  const box = document.getElementById("st-body");
+  box.innerHTML = "";
+
+  // উপরের কার্ড
+  const grid = document.createElement("div");
+  grid.className = "st-cards";
+  [["মোট সদস্য", all.total], ["জীবিত", all.alive], ["মৃত", all.dead],
+   ["পুরুষ", all.male], ["মহিলা", all.female]].forEach(([label, val]) => {
+    const c = document.createElement("div"); c.className = "st-card";
+    const n = document.createElement("div"); n.className = "st-num"; n.textContent = toBn(val);
+    const l = document.createElement("div"); l.className = "st-label"; l.textContent = label;
+    c.appendChild(n); c.appendChild(l); grid.appendChild(c);
+  });
+  box.appendChild(grid);
+
+  // নোট
+  const notes = [];
+  if (all.other > 0) notes.push(`${toBn(all.other)} জনের লিঙ্গ (gender) উল্লেখ নেই — তাঁরা পুরুষ/মহিলা কোনোটিতেই গোনা হননি।`);
+  if (unknownCount > 0) notes.push(INCLUDE_UNKNOWN_NAMES
+    ? `${toBn(unknownCount)} জনের নাম অজানা — তাঁরাও মোট সংখ্যায় ধরা হয়েছে।`
+    : `${toBn(unknownCount)} জনের নাম অজানা — তাঁরা হিসাবের বাইরে রাখা হয়েছে।`);
+  notes.push("মেয়েদের সন্তান বংশলতিকায় দেখানো হয় না, তাই তাঁরাও গোনা হয়নি।");
+  const p = document.createElement("p");
+  p.className = "st-note";
+  p.textContent = notes.join(" ");
+  box.appendChild(p);
+
+  // প্রজন্ম অনুযায়ী সারণি
+  const heads = ["প্রজন্ম", "মোট", "জীবিত", "মৃত", "পুরুষ", "মহিলা",
+                 "জীবিত পুরুষ", "জীবিত মহিলা", "মৃত পুরুষ", "মৃত মহিলা"];
+  const keys = ["total", "alive", "dead", "male", "female",
+                "maleAlive", "femaleAlive", "maleDead", "femaleDead"];
+  const wrapT = document.createElement("div"); wrapT.className = "st-table-wrap";
+  const table = document.createElement("table"); table.className = "st-table";
+  const headRow = table.createTHead().insertRow();
+  heads.forEach(h => { const th = document.createElement("th"); th.textContent = h; headRow.appendChild(th); });
+  const tb = table.createTBody();
+  const addRow = (label, s, isTotal) => {
+    const tr = tb.insertRow();
+    if (isTotal) tr.className = "st-total";
+    tr.insertCell().textContent = label;
+    keys.forEach(k => { tr.insertCell().textContent = toBn(s[k]); });
+  };
+  gens.forEach(([gen, s]) => addRow(genLabel(gen), s, false));
+  addRow("সর্বমোট", all, true);
+  wrapT.appendChild(table);
+  box.appendChild(wrapT);
+}
+
+const statsModal = document.getElementById("statsModal");
+const statsOverlay = document.getElementById("statsOverlay");
+function openStats() { renderStats(); statsModal.classList.add("open"); statsOverlay.classList.add("open"); }
+function closeStats() { statsModal.classList.remove("open"); statsOverlay.classList.remove("open"); }
+document.getElementById("openStats").addEventListener("click", openStats);
+document.getElementById("closeStats").addEventListener("click", closeStats);
+statsOverlay.addEventListener("click", closeStats);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeStats(); });
+  
 
 /* ========================= রিসাইজ (ডেস্কটপ ↔ মোবাইল পরিবর্তন হলে লেআউট বদলাবে) ========================= */
 let resizeTimer;
