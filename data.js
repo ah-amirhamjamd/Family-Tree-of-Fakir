@@ -155,7 +155,7 @@ const familyData = {
           ]},
               {name: "মোঃ আব্দুস সামাদ", birth: "অজানা", death: "", gender: "male", occupation: "সাবেক সেনা সদস্য | কৃষি উদ্যোক্তা", education: "", phone: "+8801967-303091", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",
             children: [
-            {name: "মোঃ মুশফিকুর রহমান সানি", birth: "১৫ অক্টোবর, ইইইই", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক", phone: "+880164-6745154", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
+            {name: "মোঃ মুশফিকুর রহমান সানি", birth: "১৫ অক্টোবর, ইইইই", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক", phone: "+880164-6745154", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/sunny.jpg"},
             {name: "মোঃ সাজিদ আল হাসান", birth: "", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
             {name: "মোঃ জাহিন আল সাবিত", birth: "", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
             ]},
@@ -202,7 +202,7 @@ const familyData = {
             {name: "মো: হারেজ আলী ফকির", birth: "অজানা", death: "", gender: "male", occupation: "ব্যবসা", education: "", phone: "01736-151132", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",
               children: [
             {name: "সাবরিনা জান্নাত ঈশিকা", birth: "অজানা", death: "", gender: "female", occupation: "শিক্ষার্থী", education: "স্নাতক সম্মান", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
-            {name: "সাজ্জাদ আহমেদ সিহাদ", birth: "০২ আগস্ট, বছর", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক সম্মান", phone: "01920-780536", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
+            {name: "সাজ্জাদ আহমেদ সিহাদ", birth: "০২ আগস্ট, বছর", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক সম্মান", phone: "01920-780536", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/shihad.jpg",},
             ]},
           ]},
         {name: "শেখবর ফকির", birth: "অজানা", death: "অজানা", gender: "male", occupation: "কৃষি", education: "অজানা", phone: "অজানা", address: "অজানা",},
@@ -254,7 +254,7 @@ const familyData = {
                   ]},
                 {name: "মুকুল ফকির", birth: "অজানা", death: "", gender: "male", occupation: "চাকুরজীবী", education: "", phone: "", address: "ঢাকা",
                   children: [
-                   {name: "শাকিল আহমেদ", birth: "অজানা", death: "", gender: "male", occupation: "চাকুরজীবী", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",
+                   {name: "শাকিল আহমেদ", birth: "অজানা", death: "", gender: "male", occupation: "চাকুরজীবী", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/shakil.jpg",
                     children: [
                       {name: "নিহানুর রহমান সায়ান", birth: "৩১ জুলাই, ২০২০", death: "", gender: "male", occupation: "", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
                       {name: "মুক্তাদির হাসান", birth: "১৭ মার্চ, ২০২৫", death: "", gender: "male", occupation: "", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
@@ -358,7 +358,7 @@ const familyData = {
                       children: [
                         {name: "মেহেনাজ জারিন", birth: "", death: "", gender: "female", occupation: "", education: "", phone: "", address: "",},
                       ]},
-                    {name: "তানভির ফাহাদ (শরীফ)", birth: "", death: "", gender: "male", occupation: "শিক্ষার্রী", education: "স্নাতক সম্মান (অধ্যয়নরত)", phone: "01732-728898", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
+                    {name: "তানভীর ফাহাদ (শরীফ)", birth: "", death: "", gender: "male", occupation: "শিক্ষার্রী", education: "স্নাতক সম্মান (অধ্যয়নরত)", phone: "01732-728898", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/tanvir-fahad.jpg",},
                   ]},
                 {name: "আলম ফকির", birth: "", death: "", gender: "male", occupation: "", education: "", phone: "", address: "",
                   children: [
@@ -487,7 +487,7 @@ const familyData = {
                   {name: "মোঃ আইমান", birth: "", death: "", gender: "male", occupation: "", education: "", phone: "", address: "",},
                   {name: "আয়েশা আক্তার", birth: "", death: "", gender: "female", occupation: "", education: "", phone: "", address: "",},
                 ]},
-              {name: "রবিন মিয়া", birth: "", death: "", gender: "male", occupation: "চাকরিজীবী", education: "", phone: "", address: "",
+              {name: "রবিন মিয়া", birth: "", death: "", gender: "male", occupation: "চাকরিজীবী", education: "", phone: "", address: "", photo: "photos/robin-mia.jpg",
                 children: [
                   {name: "রাফসানা", birth: "০৩ ডিসেম্বর, ২০২৫", death: "", gender: "female", occupation: "", education: "", phone: "", address: "",},
                 ]},
@@ -565,7 +565,13 @@ const siteCredits = {
   contributors: [
     { name: "মোঃ বকুল হোসেন", role: "তথ্যদাতা", info: "পুরো তালিকা করতে সর্বোচ্চ সহযোগিতা করেছেন", photo: "photos/md-bakul-hossain.jpg" },
     { name: "সাব্বির আহমেদ", role: "তথ্যদাতা", info: "৩ থেকে ৪টি শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/sabbir.jpg" },
-    { name: "তাহমিদ তন্ময়", role: "তথ্যদাতা", info: "তার পরিবার ও শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/tonmoy.jpg" }
+    { name: "তাহমিদ তন্ময়", role: "তথ্যদাতা", info: "তার পরিবার ও শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/tonmoy.jpg" },
+    { name: "জাহানারা খাতুন", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/zahanara-khatun.jpg"},
+    { name: "মোঃ মুশফিকুর রহমান সানি", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/sunny.jpg" },
+    { name: "তানভীর ফাহাদ (শরীফ)", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/tanvir-fahad.jpg" },
+    { name: "শাকিল আহমেদ", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/shakil.jpg" },
+    { name: "সাজ্জাদ আহমেদ সিহাদ", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/shihad.jpg" },
+    { name: "রবিন মিয়া", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/robin-mia.jpg" },
   ]
 };
 
