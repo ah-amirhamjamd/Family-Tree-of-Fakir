@@ -535,7 +535,7 @@ const familyData = {
             },
             {name: "রুবেল ফকির", birth: "", death: "", gender: "male", occupation: "", education: "", phone: "", address: "",},
           ]},
-        {name: "আবুল ফকির", birth: "অজানা", death: "অজানা", gender: "male", occupation: "কৃষি", education: "অজানা", phone: "অজানা", address: "অজানা",
+        {name: "আবুল ফকির", birth: "অজানা", death: "", gender: "male", occupation: "কৃষি", education: "অজানা", phone: "অজানা", address: "অজানা",
           children: [
             {name: "শাহনাজ আক্তার শিমু", birth: "", death: "", gender: "female", occupation: "", education: "", phone: "", address: "",},
             {name: "খেজুর", birth: "", death: "", gender: "male", occupation: "", education: "", phone: "", address: "",
