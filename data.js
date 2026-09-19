@@ -80,7 +80,7 @@ const familyData = {
                 ]},
               {name: "মোঃ বকুল হোসেন", birth: "৩০ জুন, ১৯৭১", death: "", gender: "male", occupation: "কৃষি", education: "প্রাতিষ্ঠানিক শিক্ষা নেই!", phone: "+8801924421069", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo:"photos/md-bakul-hossain.jpg", 
                   children: [              
-                  {name: "মোঃ আমির হামজা", birth: "০১ ফেব্রুয়ারি, ২০০৪", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (তৃতীয় বর্ষ)", phone: "+8801920823710", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
+                  {name: "মোঃ আমির হামজা", birth: "০১ ফেব্রুয়ারি, ২০০৪", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (তৃতীয় বর্ষ)", phone: "+8801920823710", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/amir.jpg",},
                   {name: "তাহমিনা আক্তার", birth: "", death: "", gender: "female", occupation: "গৃহিণী", education: "মাধ্যমিক", phone: "অজানা", address: "",},
                   {name: "আসমাউল হোসনা", birth: "", death: "", gender: "female", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (প্রথম বর্ষ)", phone: "অজানা", address: "",},
                 ]},
