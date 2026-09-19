@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>বংশলতিকা — আমাদের পরিবার</title>
+<link rel="preconnect" href="https://banglawebfonts.pages.dev">
+<link rel="stylesheet" href="https://banglawebfonts.pages.dev/css/bornomala.css">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Bengali:wght@400;600;700&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<style>
+  :root{
+    --paper:#EAE2C8;
+    --paper-deep:#DED2AC;
+    --ink:#26301F;
+    --trunk:#4A2E1E;
+    --leaf:#3E5A34;
+    --leaf-soft:#7A8B5E;
+    --gold:#A6650C;
+    --clay:#8C4A2F;
+    --line:#B7A97D;
+    --card:#F5EFDD;
+    --alive-fill:#DCE6C9;
+    --dead-fill:#C6BFA9;
+    --dead-ink:#5C5540;
+    --font:'Bornomala','Noto Serif Bengali','Hind Siliguri',serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;height:100%;background:var(--paper);}
+  body{
+    font-family:var(--font);
+    color:var(--ink);
+    overflow:hidden;
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(166,101,12,0.06) 0, transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(62,90,52,0.08) 0, transparent 50%);
+  }
+
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:20;
+    display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+    padding:18px 28px;
+    background:linear-gradient(180deg, var(--paper) 60%, rgba(234,226,200,0));
+    pointer-events:none;
+  }
+  header > *{pointer-events:auto;}
+  .brand{display:flex; align-items:baseline; gap:10px;}
+  .brand h1{
+    font-family:var(--font);
+    font-weight:700; font-size:26px; margin:0; color:var(--trunk);
+    letter-spacing:0.5px;
+  }
+  .brand span{
+    font-size:12px; color:var(--leaf-soft); font-weight:500;
+    border-left:2px solid var(--line); padding-left:10px;
+  }
+
+  .toolbar{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  .search-wrap{position:relative;}
+  #search{
+    font-family:var(--font);
+    font-size:14px; padding:9px 14px 9px 34px;
+    border:1.5px solid var(--line); border-radius:20px;
+    background:var(--card); color:var(--ink); width:190px;
+    outline:none; transition:width .25s ease, border-color .2s ease;
+  }
+  #search:focus{width:260px; border-color:var(--gold);}
+  .search-wrap svg{position:absolute; left:11px; top:50%; transform:translateY(-50%); width:14px; height:14px; stroke:var(--leaf-soft);}
+  #suggestions{
+    position:absolute; top:42px; left:0; width:320px; max-width:calc(100vw - 24px);
+    background:var(--card); border:1px solid var(--line); border-radius:10px;
+    max-height:340px; overflow-y:auto; display:none; z-index:30;
+    box-shadow:0 8px 20px rgba(38,48,31,0.15);
+  }
+  #suggestions .sg-item{padding:8px 12px; cursor:pointer; border-bottom:1px solid var(--paper-deep);}
+  #suggestions .sg-item:last-child{border-bottom:none;}
+  #suggestions .sg-item:hover{background:var(--paper-deep);}
+  #suggestions .sg-name{font-size:14px; font-weight:600; color:var(--ink);}
+  #suggestions .sg-meta{font-size:11.5px; color:var(--leaf-soft); margin-top:1px;}
+  #suggestions .sg-count{padding:6px 12px; font-size:11px; color:var(--leaf-soft); background:var(--paper-deep);}
+  #suggestions .sg-empty{padding:10px 12px; font-size:13px; color:var(--leaf-soft);}
+
+  .btn{
+    font-family:var(--font); font-size:13px; font-weight:500;
+    background:var(--card); border:1.5px solid var(--line); color:var(--ink);
+    padding:8px 14px; border-radius:20px; cursor:pointer;
+    transition:all .18s ease;
+  }
+  .btn:hover{border-color:var(--gold); color:var(--trunk);}
+
+  #canvas-wrap{width:100%; height:100%;}
+  svg#tree{width:100%; height:100%; cursor:grab;}
+  svg#tree:active{cursor:grabbing;}
+
+  .link{
+    fill:none;
+    stroke:var(--leaf-soft);
+    stroke-opacity:0.55;
+    stroke-width:2px;
+  }
+
+  .node circle{
+    stroke-width:2.5px;
+    cursor:pointer;
+    transition:r .15s ease;
+  }
+  .node.has-children circle{ stroke:var(--gold); }
+  .node.leaf circle{ stroke:var(--leaf); cursor:default; }
+  .node.root circle{ stroke:var(--clay); }
+  .node circle{ fill:var(--alive-fill); }
+  .node.status-deceased circle{ fill:var(--dead-fill); stroke-dasharray:3 2.5; }
+  .node.collapsed circle{ fill:var(--gold); stroke-dasharray:none; }
+  .node.collapsed.status-deceased circle{ fill:var(--gold); }
+
+  .node text.name{
+    font-family:var(--font);
+    font-size:14px;
+    fill:var(--ink);
+    font-weight:600;
+    paint-order:stroke;
+    stroke:var(--paper);
+    stroke-width:3px;
+    cursor:pointer;
+  }
+  .node text.name:hover{ fill:var(--gold); text-decoration:underline; }
+  .node.status-deceased text.meta{ fill:var(--dead-ink); }
+  .node text.meta{
+    font-family:var(--font);
+    font-size:10.5px;
+    fill:var(--leaf-soft);
+    paint-order:stroke;
+    stroke:var(--paper);
+    stroke-width:3px;
+  }
+  .node text.meta.order{
+    fill:var(--gold);
+    font-weight:500;
+  }
+  .node.dimmed{opacity:0.18;}
+  .link.dimmed{opacity:0.08;}
+  .node.highlight circle{fill:var(--clay); stroke:var(--clay);}
+  .node.highlight text.name{fill:var(--trunk); font-weight:700;}
+
+  text.gen-col{
+    font-family:var(--font);
+    font-size:13px; font-weight:700; fill:var(--trunk);
+    letter-spacing:0.5px;
+  }
+  line.gen-guide{
+    stroke:var(--line); stroke-width:1px; stroke-dasharray:2 4; opacity:0.6;
+  }
+
+  #hint{
+    position:fixed; bottom:18px; left:50%; transform:translateX(-50%);
+    font-size:12px; color:var(--leaf-soft); background:var(--card);
+    padding:7px 16px; border-radius:16px; border:1px solid var(--line);
+    z-index:20; opacity:0.9; white-space:nowrap;
+  }
+
+  #legend{
+    position:fixed; bottom:18px; right:22px; z-index:20;
+    background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:10px 14px; font-size:11.5px; color:var(--ink); line-height:1.9;
+  }
+  #legend .dot{display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; border:2px solid;}
+
+  /* ---------- বিস্তারিত প্যানেল ---------- */
+  #detailPanel{
+    position:fixed; top:0; right:0; height:100%; width:340px; max-width:100%;
+    background:var(--card); border-left:1.5px solid var(--line);
+    box-shadow:-10px 0 30px rgba(38,48,31,0.18);
+    z-index:40; transform:translateX(100%); transition:transform .3s ease;
+    padding:26px 24px; overflow-y:auto;
+  }
+  #detailPanel.open{ transform:translateX(0); }
+  #detailPanel .close-btn{
+    position:absolute; top:16px; right:18px; background:none; border:none;
+    font-size:20px; color:var(--leaf-soft); cursor:pointer; line-height:1;
+  }
+  #detailPanel .close-btn:hover{ color:var(--clay); }
+  #detailPanel h2{
+    font-family:var(--font); font-size:21px; color:var(--trunk);
+    margin:6px 0 2px 0;
+  }
+  .photo-wrap{
+    width:104px; height:104px; border-radius:50%; overflow:hidden;
+    border:2.5px solid var(--gold); background:var(--alive-fill);
+    margin:14px 0 6px;
+  }
+  .photo-wrap img{width:100%; height:100%; object-fit:cover; display:block;}
+  .photo-wrap svg{width:100%; height:100%; display:block;}
+  #detailPanel .status-tag{
+    display:inline-block; font-size:11.5px; font-weight:600; padding:3px 10px;
+    border-radius:10px; margin-bottom:16px;
+  }
+  #detailPanel .status-tag.alive{ background:var(--alive-fill); color:var(--leaf); }
+  #detailPanel .status-tag.deceased{ background:var(--dead-fill); color:var(--dead-ink); }
+  #detailPanel .field{ margin-bottom:14px; }
+  #detailPanel .field label{
+    display:block; font-size:11px; color:var(--leaf-soft); font-weight:600;
+    margin-bottom:2px; letter-spacing:0.3px;
+  }
+  #detailPanel .field div{ font-size:14.5px; color:var(--ink); line-height:1.6; }
+  #detailPanel .field div.empty{ color:var(--line); font-style:italic; }
+  #overlay, #creditsOverlay{
+    position:fixed; inset:0; background:rgba(38,48,31,0.15); z-index:35;
+    display:none;
+  }
+  #overlay.open, #creditsOverlay.open{ display:block; }
+  #creditsOverlay{ z-index:55; background:rgba(38,48,31,0.3); }
+
+  /* ---------- সম্পাদক ও তথ্যদাতা ---------- */
+  #creditsModal{
+    position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:min(580px,92vw); max-height:86vh; overflow-y:auto;
+    background:var(--card); border:1.5px solid var(--line); border-radius:16px;
+    box-shadow:0 20px 50px rgba(38,48,31,0.3);
+    padding:26px 26px 20px; z-index:60; display:none;
+  }
+  #creditsModal.open{ display:block; }
+  #creditsModal .close-btn{
+    position:absolute; top:14px; right:18px; background:none; border:none;
+    font-size:20px; color:var(--leaf-soft); cursor:pointer; line-height:1;
+  }
+  #creditsModal .close-btn:hover{ color:var(--clay); }
+  #creditsModal h2{ font-size:20px; color:var(--trunk); margin:0 0 4px; }
+  #creditsModal h3{
+    font-size:14px; color:var(--leaf); margin:20px 0 6px;
+    padding-bottom:4px; border-bottom:1.5px solid var(--line);
+  }
+  #creditsModal .intro{ font-size:13px; color:var(--leaf-soft); margin:0; line-height:1.6; }
+  .person-card{
+    display:flex; gap:14px; align-items:center; padding:10px 0;
+    border-bottom:1px solid var(--paper-deep);
+  }
+  .person-card:last-child{ border-bottom:none; }
+  .person-card .pc-name{ font-size:15px; font-weight:600; color:var(--ink); }
+  .person-card .pc-role{ font-size:12.5px; color:var(--gold); font-weight:500; }
+  .person-card .pc-info{ font-size:12.5px; color:var(--leaf-soft); line-height:1.5; margin-top:2px; }
+  .avatar{
+    width:56px; height:56px; border-radius:50%; flex:none; overflow:hidden;
+    background:var(--leaf-soft); color:#fff; font-weight:700; font-size:22px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .avatar img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .avatar.big{ width:88px; height:88px; font-size:34px; border:2.5px solid var(--gold); }
+
+  /* ---------- মোবাইল ---------- */
+  @media (max-width:768px){
+    header{ padding:10px 12px; }
+    .brand h1{ font-size:21px; }
+    .brand span{ display:none; }
+    .toolbar{ gap:6px; }
+    #search{ width:140px; font-size:13px; padding:7px 12px 7px 30px; }
+    #search:focus{ width:190px; }
+    .btn{ font-size:12px; padding:6px 10px; }
+    #hint, #legend{ display:none; }
+    #detailPanel{ width:min(340px,92vw); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    #detailPanel{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <h1>বংশলতিকা</h1>
+    <span>একজন থেকে যাঁরা অনেকজন</span>
+  </div>
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="search" type="text" placeholder="নাম খুঁজুন..." autocomplete="off">
+      <div id="suggestions"></div>
+    </div>
+    <button class="btn" id="expandAll">সব খুলুন</button>
+    <button class="btn" id="collapseAll">সব বন্ধ করুন</button>
+    <button class="btn" id="resetView">মাঝে আনুন</button>
+    <button class="btn" id="openCredits">সম্পাদক ও তথ্যদাতা</button>
+  </div>
+</header>
+
+<div id="canvas-wrap"><svg id="tree"></svg></div>
+
+<div id="hint">স্ক্রল করে জুম · টেনে সরান · বৃত্তে ক্লিক করে ডাল খুলুন/বন্ধ · নামে ক্লিক করে বিস্তারিত দেখুন</div>
+<div id="legend">
+  <div><span class="dot" style="border-color:var(--clay); background:var(--alive-fill);"></span>মূল পুরুষ</div>
+  <div><span class="dot" style="border-color:var(--gold); background:var(--gold);"></span>বন্ধ (ক্লিক করুন)</div>
+  <div><span class="dot" style="border-color:var(--leaf-soft); background:var(--alive-fill);"></span>জীবিত</div>
+  <div><span class="dot" style="border-color:var(--leaf-soft); background:var(--dead-fill); border-style:dashed;"></span>মৃত</div>
+</div>
+
+<div id="overlay"></div>
+<div id="detailPanel">
+  <button class="close-btn" id="closePanel" aria-label="বন্ধ করুন">✕</button>
+  <div class="photo-wrap" id="dp-photo-wrap"></div>
+  <h2 id="dp-name"></h2>
+  <span class="status-tag" id="dp-status"></span>
+  <div class="field"><label>প্রজন্ম</label><div id="dp-gen"></div></div>
+  <div class="field"><label>কততম সন্তান</label><div id="dp-order"></div></div>
+  <div class="field"><label>জন্ম তারিখ</label><div id="dp-birth"></div></div>
+  <div class="field"><label>মৃত্যু তারিখ</label><div id="dp-death"></div></div>
+  <div class="field"><label>শিক্ষাগত যোগ্যতা</label><div id="dp-education"></div></div>
+  <div class="field"><label>কর্মসংস্থান</label><div id="dp-occupation"></div></div>
+  <div class="field"><label>ফোন নম্বর</label><div id="dp-phone"></div></div>
+  <div class="field"><label>বর্তমান ঠিকানা</label><div id="dp-address"></div></div>
+  <div class="field"><label>অন্যান্য / অতিরিক্ত তথ্য</label><div id="dp-extra"></div></div>
+</div>
+
+<div id="creditsOverlay"></div>
+<div id="creditsModal" role="dialog" aria-modal="true" aria-labelledby="cr-title">
+  <button class="close-btn" id="closeCredits" aria-label="বন্ধ করুন">✕</button>
+  <h2 id="cr-title">সম্পাদক ও তথ্যদাতা</h2>
+  <p class="intro" id="cr-intro"></p>
+  <h3>সম্পাদক</h3>
+  <div id="cr-editor"></div>
+  <h3>তথ্যদাতা</h3>
+  <div id="cr-contributors"></div>
+</div>
+
+<!-- আপনার সব তথ্য (familyData, siteCredits, siteSettings) এই ফাইলে থাকে -->
+<script src="data.js"></script>
+<script>
+if (typeof familyData === 'undefined') {
+  document.body.innerHTML = '<p style="padding:40px;font-family:sans-serif;line-height:1.8">data.js ফাইলটি পাওয়া যায়নি।<br>index.html এবং data.js — দুটি ফাইল একই ফোল্ডারে রাখুন।</p>';
+  throw new Error('data.js পাওয়া যায়নি');
+}
+const SETTINGS = (typeof siteSettings !== 'undefined') ? siteSettings : {};
+const CREDITS  = (typeof siteCredits  !== 'undefined') ? siteCredits  : null;
+
+/* বংশের নিয়ম: মেয়ের (gender: "female") সন্তান ডেটাতে থাকলেও তা দেখানো হবে না —
+   মেয়ের নামেই সেই শাখা শেষ হয়ে যাবে। ছেলে (gender: "male" বা অনির্দিষ্ট) হলে
+   বংশ স্বাভাবিকভাবে পরবর্তী প্রজন্মে চলতে থাকবে। */
+(function pruneDaughterLines(person) {
+  if (!person.children) return;
+  person.children.forEach(child => {
+    if (child.gender === "female") {
+      delete child.children;
+    } else {
+      pruneDaughterLines(child);
+    }
+  });
+})(familyData);
+
+/* ========================= লেআউট মোড =========================
+   ডেস্কটপ ('td')  : উপর থেকে নিচে — ভাইবোনরা পাশাপাশি (অনুভূমিক), প্রজন্ম নিচের দিকে নামে
+   মোবাইল  ('lr')  : বাম থেকে ডানে — আগের মতোই                                      */
+const MOBILE_BP = 768;
+const modeFor = () => (window.innerWidth <= MOBILE_BP ? 'lr' : 'td');
+let mode = modeFor();
+
+const svgEl = d3.select("#tree");
+const wrap = document.getElementById("canvas-wrap");
+let width = wrap.clientWidth, height = wrap.clientHeight;
+
+const g = svgEl.append("g");
+const columnLayer = g.append("g").attr("class", "columns");
+const linkLayer = g.append("g").attr("class", "links");
+const nodeLayer = g.append("g").attr("class", "nodes");
+
+const zoom = d3.zoom()
+  .scaleExtent([0.15, 2.5])
+  .on("zoom", (event) => g.attr("transform", event.transform));
+svgEl.call(zoom);
+
+const treeLayout = d3.tree();
+function applyLayoutSettings() {
+  if (mode === 'td') {
+    treeLayout.nodeSize([165, 135]).separation((a, b) => a.parent === b.parent ? 1 : 1.2);
+  } else {
+    treeLayout.nodeSize([58, 210]).separation((a, b) => a.parent === b.parent ? 1 : 2);
+  }
+}
+applyLayoutSettings();
+
+// লেআউট স্থানাঙ্ক (x,y) থেকে পর্দার স্থানাঙ্ক
+function scr(x, y) { return mode === 'td' ? [x, y] : [y, x]; }
+
+const root = d3.hierarchy(familyData);
+root.x0 = 0;
+root.y0 = 0;
+
+// সবাইকে (লুকানো সহ) এখানে ধরা হলো — সার্চ এখান থেকেই হবে, তাই সব প্রজন্ম পাওয়া যাবে
+const allNodes = root.descendants();
+allNodes.forEach((d, i) => {
+  d.id = i;
+  d._children = d.children;
+});
+// শুরুতে শুধু মূল পুরুষ ও তাঁর ১ প্রজন্ম দেখাবে
+allNodes.forEach(d => { if (d.depth >= 1 && d.children) d.children = null; });
+
+/* ========================= বাংলা সংখ্যা ও লেবেল ========================= */
+const bnDigits = ['০','১','২','৩','৪','৫','৬','৭','৮','৯'];
+function toBn(num) {
+  return String(num).split('').map(ch => (ch >= '0' && ch <= '9') ? bnDigits[+ch] : ch).join('');
+}
+function genNumber(d) { return d.depth + 1; }
+function genLabel(genNum) { return `প্রজন্ম ${toBn(genNum)}`; }
+
+const ordinalWords = {1:"১ম",2:"২য়",3:"৩য়",4:"৪র্থ",5:"৫ম",6:"৬ষ্ঠ",7:"৭ম",8:"৮ম",9:"৯ম",10:"১০ম"};
+function bnOrdinal(n) { return ordinalWords[n] || `${toBn(n)}তম`; }
+function birthOrder(d) {
+  if (!d.parent || !d.parent.data.children) return null;
+  const idx = d.parent.data.children.indexOf(d.data);
+  return idx === -1 ? null : idx + 1;
+}
+function orderLabel(d) {
+  const order = birthOrder(d);
+  if (!order) return "";
+  return `${bnOrdinal(order)} সন্তান`;
+}
+function rangeLine(d) {
+  const p = d.data;
+  const b = p.birth || "জন্ম অজানা";
+  return p.death ? `${b} – ${p.death}` : `${b} – বর্তমান`;
+}
+function metaLine(d) { return `${genLabel(genNumber(d))} · ${rangeLine(d)}`; }
+
+function wrapText(text, max) {
+  const words = String(text).split(/\s+/).filter(Boolean);
+  const lines = [];
+  let cur = "";
+  words.forEach(w => {
+    const next = cur ? cur + " " + w : w;
+    if (cur && Array.from(next).length > max) { lines.push(cur); cur = w; }
+    else cur = next;
+  });
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [""];
+}
+
+/* ========================= খোলা/বন্ধ (১ প্রজন্ম করে) ========================= */
+function collapseRec(d) {
+  const kids = d.children || d._children;
+  if (kids) {
+    kids.forEach(collapseRec);
+    d._children = kids;
+    d.children = null;
+  }
+}
+function toggle(d) {
+  if (d.children) {
+    collapseRec(d);                 // বন্ধ করলে নিচের সবাই বন্ধ হবে
+  } else if (d._children) {
+    d.children = d._children;       // খুললে শুধু ১ প্রজন্ম খুলবে
+    d._children = null;
+    d.children.forEach(collapseRec);
+  } else {
+    return;
+  }
+  update(d);
+}
+
+/* ========================= রেন্ডার ========================= */
+function buildLabel(gsel, d) {
+  const showName = (e) => { e.stopPropagation(); showDetail(d); };
+  if (mode === 'td') {
+    const nameEl = gsel.append("text").attr("class", "name")
+      .attr("text-anchor", "middle").style("fill-opacity", 1e-6).on("click", showName);
+    const lines = wrapText(d.data.name, 14);
+    lines.forEach((ln, i) => nameEl.append("tspan").attr("x", 0).attr("y", 26 + i * 16).text(ln));
+    const base = 26 + (lines.length - 1) * 16;
+    gsel.append("text").attr("class", "meta").attr("text-anchor", "middle")
+      .attr("x", 0).attr("y", base + 15).text(rangeLine(d)).style("fill-opacity", 1e-6);
+    gsel.append("text").attr("class", "meta order").attr("text-anchor", "middle")
+      .attr("x", 0).attr("y", base + 28).text(orderLabel(d)).style("fill-opacity", 1e-6);
+  } else {
+    const hasKids = !!(d.children || d._children);
+    const ax = hasKids ? -14 : 14, anchor = hasKids ? "end" : "start";
+    gsel.append("text").attr("class", "name").attr("dy", "-0.9em")
+      .attr("x", ax).attr("text-anchor", anchor).text(d.data.name)
+      .style("fill-opacity", 1e-6).on("click", showName);
+    gsel.append("text").attr("class", "meta").attr("dy", "0.9em")
+      .attr("x", ax).attr("text-anchor", anchor).text(metaLine(d)).style("fill-opacity", 1e-6);
+    gsel.append("text").attr("class", "meta order").attr("dy", "2.15em")
+      .attr("x", ax).attr("text-anchor", anchor).text(orderLabel(d)).style("fill-opacity", 1e-6);
+  }
+}
+
+function organicLink(d) {
+  const [sx, sy] = scr(d.source.x, d.source.y);
+  const [tx, ty] = scr(d.target.x, d.target.y);
+  if (mode === 'td') {
+    const my = (sy + ty) / 2;
+    return `M${sx},${sy} C${sx},${my} ${tx},${my} ${tx},${ty}`;
+  }
+  const mx = (sx + tx) / 2;
+  return `M${sx},${sy} C${mx},${sy} ${mx},${ty} ${tx},${ty}`;
+}
+
+function nodeClass(d) {
+  let c = "";
+  if (d.depth === 0) c += "root ";
+  if (d.children) c += "has-children ";
+  else if (d._children) c += "has-children collapsed ";
+  else c += "leaf ";
+  c += (d.data.death ? "status-deceased " : "status-alive ");
+  return c.trim();
+}
+
+function update(source) {
+  treeLayout(root);
+
+  const nodes = root.descendants();
+  const links = root.links();
+
+  // ---- নোড ----
+  const node = nodeLayer.selectAll("g.node").data(nodes, d => d.id);
+
+  const nodeEnter = node.enter().append("g")
+    .attr("class", d => "node " + nodeClass(d))
+    .attr("transform", () => `translate(${scr(source.x0, source.y0)})`);
+
+  nodeEnter.append("circle")
+    .attr("r", 1e-6)
+    .on("click", (event, d) => { event.stopPropagation(); toggle(d); });
+
+  nodeEnter.each(function (d) { buildLabel(d3.select(this), d); });
+
+  const nodeUpdate = node.merge(nodeEnter);
+  nodeUpdate.attr("class", d => "node " + nodeClass(d));
+
+  nodeUpdate.transition().duration(400)
+    .attr("transform", d => `translate(${scr(d.x, d.y)})`);
+
+  nodeUpdate.select("circle").transition().duration(400).attr("r", 7);
+  nodeUpdate.selectAll("text").transition().duration(400).style("fill-opacity", 1);
+
+  const nodeExit = node.exit().transition().duration(300)
+    .attr("transform", () => `translate(${scr(source.x, source.y)})`)
+    .remove();
+  nodeExit.select("circle").attr("r", 1e-6);
+  nodeExit.selectAll("text").style("fill-opacity", 1e-6);
+
+  // ---- লিংক ----
+  const link = linkLayer.selectAll("path.link").data(links, d => d.target.id);
+
+  const linkEnter = link.enter().insert("path", "g")
+    .attr("class", "link")
+    .attr("d", () => {
+      const o = {x: source.x0, y: source.y0};
+      return organicLink({source: o, target: o});
+    });
+
+  link.merge(linkEnter).transition().duration(400).attr("d", organicLink);
+
+  link.exit().transition().duration(300)
+    .attr("d", () => {
+      const o = {x: source.x, y: source.y};
+      return organicLink({source: o, target: o});
+    })
+    .remove();
+
+  root.each(d => { d.x0 = d.x; d.y0 = d.y; });
+
+  // ---- প্রজন্ম হেডার ও গাইড লাইন ----
+  const depthMap = new Map();
+  let gMin = Infinity, gMax = -Infinity;
+  nodes.forEach(d => {
+    gMin = Math.min(gMin, d.x); gMax = Math.max(gMax, d.x);
+    const e = depthMap.get(d.depth);
+    if (!e) depthMap.set(d.depth, { depth: d.depth, pos: d.y, min: d.x, max: d.x });
+    else { e.min = Math.min(e.min, d.x); e.max = Math.max(e.max, d.x); }
+  });
+  const columns = Array.from(depthMap.values()).map(c => {
+    if (mode === 'td') {
+      return { ...c, tx: gMin - 90, ty: c.pos + 4, anchor: 'end',
+               x1: gMin - 80, x2: gMax + 80, y1: c.pos, y2: c.pos };
+    }
+    return { ...c, tx: c.pos, ty: c.min - 46, anchor: 'middle',
+             x1: c.pos, x2: c.pos, y1: c.min - 34, y2: c.max + 34 };
+  });
+
+  const colHeader = columnLayer.selectAll("text.gen-col").data(columns, c => c.depth);
+  colHeader.enter().append("text")
+    .attr("class", "gen-col")
+    .attr("x", c => c.tx).attr("y", c => c.ty)
+    .style("opacity", 1e-6)
+    .text(c => genLabel(c.depth + 1))
+    .merge(colHeader)
+    .attr("text-anchor", c => c.anchor)
+    .transition().duration(400)
+    .attr("x", c => c.tx).attr("y", c => c.ty)
+    .style("opacity", 1);
+  colHeader.exit().remove();
+
+  const colLine = columnLayer.selectAll("line.gen-guide").data(columns, c => c.depth);
+  colLine.enter().append("line")
+    .attr("class", "gen-guide")
+    .attr("x1", c => c.x1).attr("x2", c => c.x2)
+    .attr("y1", c => c.y1).attr("y2", c => c.y2)
+    .style("opacity", 1e-6)
+    .merge(colLine)
+    .transition().duration(400)
+    .attr("x1", c => c.x1).attr("x2", c => c.x2)
+    .attr("y1", c => c.y1).attr("y2", c => c.y2)
+    .style("opacity", 1);
+  colLine.exit().remove();
+}
+
+update(root);
+centerOnNode(root, true, true);
+
+/* ========================= ভিউ কন্ট্রোল ========================= */
+function centerOnNode(d, immediate, atTop) {
+  const k = 0.85;
+  const [px, py] = scr(d.x || 0, d.y || 0);
+  let tx, ty;
+  if (mode === 'td') {
+    tx = width / 2 - px * k;
+    ty = (atTop ? 120 : height / 2) - py * k;
+  } else {
+    tx = width / 2 - px * k - 40;
+    ty = height / 2 - py * k;
+  }
+  const t = d3.zoomIdentity.translate(tx, ty).scale(k);
+  svgEl.transition().duration(immediate ? 0 : 500).call(zoom.transform, t);
+}
+
+document.getElementById("resetView").addEventListener("click", () => centerOnNode(root, false, true));
+
+document.getElementById("expandAll").addEventListener("click", () => {
+  allNodes.forEach(d => { if (d._children) { d.children = d._children; d._children = null; } });
+  update(root);
+});
+
+document.getElementById("collapseAll").addEventListener("click", () => {
+  if (root.children) root.children.forEach(collapseRec);
+  update(root);
+  centerOnNode(root, false, true);
+});
+
+/* ========================= সার্চ (সব প্রজন্ম, আংশিক নাম, একই নামের সবাই) ========================= */
+function normalize(s) {
+  return String(s || "").replace(/[\u200b\u200c\u200d]/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+}
+const people = allNodes.map(d => ({ node: d, norm: normalize(d.data.name) }));
+
+function searchPeople(q) {
+  const nq = normalize(q);
+  if (!nq) return [];
+  const tokens = nq.split(" ");
+  const out = [];
+  people.forEach(p => {
+    if (!tokens.every(t => p.norm.includes(t))) return;
+    let score = 3;
+    if (p.norm === nq) score = 0;
+    else if (p.norm.startsWith(nq)) score = 1;
+    else if (p.norm.split(" ").some(w => w.startsWith(tokens[0]))) score = 2;
+    out.push({ ...p, score });
+  });
+  out.sort((a, b) => a.score - b.score || a.node.depth - b.node.depth || a.node.id - b.node.id);
+  return out;
+}
+
+const searchInput = document.getElementById("search");
+const suggestBox = document.getElementById("suggestions");
+let lastResults = [];
+
+function fatherLine(d) {
+  return d.parent ? `পিতা/অভিভাবক: ${d.parent.data.name}` : "মূল পুরুষ";
+}
+
+function renderSuggestions() {
+  const q = searchInput.value.trim();
+  suggestBox.innerHTML = "";
+  if (!q) { suggestBox.style.display = "none"; clearHighlight(); lastResults = []; return; }
+  lastResults = searchPeople(q);
+  if (lastResults.length === 0) {
+    const e = document.createElement("div");
+    e.className = "sg-empty"; e.textContent = "কোনো নাম পাওয়া যায়নি";
+    suggestBox.appendChild(e);
+    suggestBox.style.display = "block";
+    return;
+  }
+  const shown = lastResults.slice(0, 60);
+  const cnt = document.createElement("div");
+  cnt.className = "sg-count";
+  cnt.textContent = `${toBn(lastResults.length)} জন পাওয়া গেছে` + (lastResults.length > shown.length ? ` (প্রথম ${toBn(shown.length)} জন দেখানো হচ্ছে)` : "");
+  suggestBox.appendChild(cnt);
+  shown.forEach(r => {
+    const item = document.createElement("div");
+    item.className = "sg-item";
+    const nm = document.createElement("div");
+    nm.className = "sg-name"; nm.textContent = r.node.data.name;
+    const mt = document.createElement("div");
+    mt.className = "sg-meta";
+    mt.textContent = `${genLabel(genNumber(r.node))} · ${fatherLine(r.node)}`;
+    item.appendChild(nm); item.appendChild(mt);
+    item.addEventListener("click", () => {
+      searchInput.value = r.node.data.name;
+      suggestBox.style.display = "none";
+      searchInput.blur();
+      goToPerson(r.node);
+    });
+    suggestBox.appendChild(item);
+  });
+  suggestBox.style.display = "block";
+}
+
+searchInput.addEventListener("input", renderSuggestions);
+searchInput.addEventListener("focus", () => { if (searchInput.value.trim()) renderSuggestions(); });
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter" && lastResults.length) {
+    suggestBox.style.display = "none";
+    goToPerson(lastResults[0].node);
+  }
+});
+document.addEventListener("click", (e) => {
+  if (!e.target.closest(".search-wrap")) suggestBox.style.display = "none";
+});
+
+function goToPerson(target) {
+  // পূর্বপুরুষদের খুলুন, যাতে টার্গেট দৃশ্যমান হয় (অন্য শাখা বন্ধই থাকবে)
+  let cur = target.parent;
+  while (cur) {
+    if (cur._children && !cur.children) { cur.children = cur._children; cur._children = null; }
+    cur = cur.parent;
+  }
+  update(root);
+  setTimeout(() => {
+    centerOnNode(target, false, false);
+    highlightNode(target.id);
+  }, 420);
+}
+
+function clearHighlight() {
+  nodeLayer.selectAll("g.node").classed("dimmed", false).classed("highlight", false);
+  linkLayer.selectAll("path.link").classed("dimmed", false);
+}
+function highlightNode(id) {
+  clearHighlight();
+  nodeLayer.selectAll("g.node")
+    .classed("dimmed", d => d.id !== id)
+    .classed("highlight", d => d.id === id);
+  setTimeout(clearHighlight, 3500);
+}
+
+/* ========================= বিস্তারিত তথ্য প্যানেল ========================= */
+const detailPanel = document.getElementById("detailPanel");
+const overlay = document.getElementById("overlay");
+
+function fillField(id, value) {
+  const el = document.getElementById(id);
+  if (value) { el.textContent = value; el.classList.remove("empty"); }
+  else { el.textContent = "তথ্য নেই"; el.classList.add("empty"); }
+}
+
+const SILHOUETTE = (fill) => `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+  <rect width="100" height="100" fill="${fill}"/>
+  <circle cx="50" cy="38" r="17" fill="#fff" fill-opacity=".85"/>
+  <path d="M16 96c0-20 15-33 34-33s34 13 34 33z" fill="#fff" fill-opacity=".85"/></svg>`;
+
+function setPhoto(p) {
+  const box = document.getElementById("dp-photo-wrap");
+  box.innerHTML = "";
+  const placeholder = () => {
+    box.innerHTML = SILHOUETTE(p.gender === "female" ? "#B98A6E" : "#7A8B5E");
+  };
+  if (p.photo) {
+    const img = new Image();
+    img.alt = p.name;
+    img.onerror = placeholder;
+    img.src = p.photo;
+    box.appendChild(img);
+  } else {
+    placeholder();
+  }
+}
+
+function showDetail(d) {
+  const p = d.data;
+  document.getElementById("dp-name").textContent = p.name;
+  setPhoto(p);
+  const statusTag = document.getElementById("dp-status");
+  if (p.death) {
+    statusTag.textContent = "মৃত";
+    statusTag.className = "status-tag deceased";
+  } else {
+    statusTag.textContent = "জীবিত";
+    statusTag.className = "status-tag alive";
+  }
+  fillField("dp-gen", genLabel(genNumber(d)));
+  fillField("dp-order", d.parent ? orderLabel(d) : null);
+  fillField("dp-birth", p.birth);
+  fillField("dp-death", p.death);
+  fillField("dp-education", p.education);
+  fillField("dp-occupation", p.occupation);
+  fillField("dp-phone", SETTINGS.hidePhone ? "গোপনীয়" : p.phone);
+  fillField("dp-address", SETTINGS.hideAddress ? "গোপনীয়" : p.address);
+  fillField("dp-extra", p.extra || p["অতিরিক্ত"] || p["অন্যান্য"]);
+
+  detailPanel.classList.add("open");
+  overlay.classList.add("open");
+}
+function hideDetail() {
+  detailPanel.classList.remove("open");
+  overlay.classList.remove("open");
+}
+document.getElementById("closePanel").addEventListener("click", hideDetail);
+overlay.addEventListener("click", hideDetail);
+
+/* ========================= সম্পাদক ও তথ্যদাতা ========================= */
+function makeAvatar(name, photo, big) {
+  const av = document.createElement("div");
+  av.className = "avatar" + (big ? " big" : "");
+  const fallback = () => { av.innerHTML = ""; av.textContent = Array.from(name || "?")[0]; };
+  if (photo) {
+    const img = new Image();
+    img.alt = name || "";
+    img.onerror = fallback;
+    img.src = photo;
+    av.appendChild(img);
+  } else fallback();
+  return av;
+}
+function makePersonCard(item, big) {
+  const card = document.createElement("div");
+  card.className = "person-card";
+  card.appendChild(makeAvatar(item.name, item.photo, big));
+  const txt = document.createElement("div");
+  const n = document.createElement("div"); n.className = "pc-name"; n.textContent = item.name;
+  txt.appendChild(n);
+  if (item.role) { const r = document.createElement("div"); r.className = "pc-role"; r.textContent = item.role; txt.appendChild(r); }
+  if (item.info) { const i = document.createElement("div"); i.className = "pc-info"; i.textContent = item.info; txt.appendChild(i); }
+  card.appendChild(txt);
+  return card;
+}
+
+const creditsModal = document.getElementById("creditsModal");
+const creditsOverlay = document.getElementById("creditsOverlay");
+if (!CREDITS) {
+  document.getElementById("openCredits").style.display = "none";
+} else {
+  document.getElementById("cr-intro").textContent = CREDITS.intro || "";
+  const ed = document.getElementById("cr-editor");
+  (CREDITS.editors || []).forEach(e => ed.appendChild(makePersonCard(e, true)));
+  const co = document.getElementById("cr-contributors");
+  (CREDITS.contributors || []).forEach(c => co.appendChild(makePersonCard(c, false)));
+}
+function openCredits() { creditsModal.classList.add("open"); creditsOverlay.classList.add("open"); }
+function closeCredits() { creditsModal.classList.remove("open"); creditsOverlay.classList.remove("open"); }
+document.getElementById("openCredits").addEventListener("click", openCredits);
+document.getElementById("closeCredits").addEventListener("click", closeCredits);
+creditsOverlay.addEventListener("click", closeCredits);
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closeCredits(); hideDetail(); } });
+
+/* ========================= রিসাইজ (ডেস্কটপ ↔ মোবাইল পরিবর্তন হলে লেআউট বদলাবে) ========================= */
+let resizeTimer;
+window.addEventListener("resize", () => {
+  width = wrap.clientWidth; height = wrap.clientHeight;
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    const m = modeFor();
+    if (m !== mode) {
+      mode = m;
+      applyLayoutSettings();
+      nodeLayer.selectAll("*").remove();
+      linkLayer.selectAll("*").remove();
+      columnLayer.selectAll("*").remove();
+      root.x0 = 0; root.y0 = 0;
+      update(root);
+      centerOnNode(root, true, true);
+    }
+  }, 200);
+});
+</script>
+</body>
+</html>
