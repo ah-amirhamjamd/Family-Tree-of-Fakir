@@ -563,7 +563,7 @@ const siteCredits = {
     { name: "মোঃ আমির হামজা", role: "সংকলক ও সম্পাদক", info: "বংশলতিকা প্রস্তুত ও সম্পাদনা", photo: "photos/amir.jpg" }
   ],
   contributors: [
-    { name: "মোঃ বকুল হোসেন", role: "তথ্যদাতা", info: "পুরো তালিকা করতে সর্বোচ্চ সহযোগিতা করেছেন, photo: "photos/md-bakul-hossain.jpg" },
+    { name: "মোঃ বকুল হোসেন", role: "তথ্যদাতা", info: "পুরো তালিকা করতে সর্বোচ্চ সহযোগিতা করেছেন", photo: "photos/md-bakul-hossain.jpg" },
     { name: "সাব্বির আহমেদ", role: "তথ্যদাতা", info: "৩ থেকে ৪টি শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/sabbir.jpg" },
     { name: "তাহমিদ তন্ময়", role: "তথ্যদাতা", info: "তার পরিবার ও শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/tonmoy.jpg" }
   ]
