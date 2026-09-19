@@ -29,7 +29,7 @@ const familyData = {
   children: [
     {name: "মানিক ফকির", birth: "অজানা", death: "অজানা", gender: "male", occupation: "অজানা", education: "অজানা", address: "অজানা",
       children: [
-        {name: "অজানা",},
+        {name: "অজানা", birth: "", death: "অজানা", gender: "male", occupation: "", education: "", address: "",},
       ]},    
     {name: "হানিফ ফকির", birth: "অজানা", death: "অজানা", gender: "male", occupation: "কৃষি", education: "অজানা",  phone: "অজানা", address: "অজানা",
       children: [
@@ -187,7 +187,7 @@ const familyData = {
       ]},
     {name: "বুইদ্দা ফকির", birth: "অজানা", death: "অজানা", gender: "male", occupation: "কৃষি", education: "অজানা", phone: "অজানা", address: "অজানা",
       children: [
-        {name: "👨 (অজানা)", birth: "অজানা", death: "", gender: "male", occupation: "", education: "", phone: "", address: "",},
+        {name: "👨 (অজানা)", birth: "", death: "অজানা", gender: "male", occupation: "", education: "", phone: "", address: "",},
         {name: "নেকবর ফকির", birth: "অজানা", death: "অজানা", gender: "male", occupation: "কৃষি", education: "অজানা", phone: "অজানা", address: "অজানা",
           children: [
             {name: "জহির উদ্দিন", birth: "অজানা", death: "", gender: "male", occupation: "কৃষি", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",
@@ -560,7 +560,7 @@ const familyData = {
 const siteCredits = {
   intro: "এই বংশলতিকা পরিবারের সদস্যদের সম্মিলিত তথ্য ও স্মৃতির ভিত্তিতে তৈরি। কোনো তথ্য ভুল বা অসম্পূর্ণ থাকলে সম্পাদকের সাথে যোগাযোগ করুন।",
   editors: [
-    { name: "সম্পাদকের নাম", role: "সংকলক ও সম্পাদক", info: "বংশলতিকা প্রস্তুত ও সম্পাদনা", photo: "photos/editor.jpg" }
+    { name: "সম্পাদকের নাম", role: "সংকলক ও সম্পাদক", info: "বংশলতিকা প্রস্তুত ও সম্পাদনা", photo: "photos/amir.jpg" }
   ],
   contributors: [
     { name: "তথ্যদাতার নাম ১", role: "তথ্যদাতা", info: "হানিফ ফকিরের শাখার তথ্য", photo: "photos/contributor1.jpg" },
