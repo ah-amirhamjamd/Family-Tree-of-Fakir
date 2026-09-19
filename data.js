@@ -78,9 +78,9 @@ const familyData = {
                   {name: "ছাদিয়া আক্তার", birth: "", death: "", gender: "female", occupation: "গৃহিণী", education: "মাধ্যমিক", phone: "অজানা", address: "",},
                   {name: "সাঈম", birth: "", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "মাধ্যমিক", phone: "অজানা", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
                 ]},
-              {name: "মোঃ বকুল হোসেন", birth: "৩০ জুন, ১৯৭১", death: "", gender: "male", occupation: "কৃষি", education: "প্রাতিষ্ঠানিক শিক্ষা নেই!", phone: "+8801924421069", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", 
+              {name: "মোঃ বকুল হোসেন", birth: "৩০ জুন, ১৯৭১", death: "", gender: "male", occupation: "কৃষি", education: "প্রাতিষ্ঠানিক শিক্ষা নেই!", phone: "+8801924421069", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo:"photos/md-bakul-hossain.jpg", 
                   children: [              
-                  {name: "মোঃ আমির হামজা", birth: "০১ ফেব্রুয়ারি, ২০০৪", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (তৃতীয় বর্ষ)", phone: "+8801920823710", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/amir.jpg"},
+                  {name: "মোঃ আমির হামজা", birth: "০১ ফেব্রুয়ারি, ২০০৪", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (তৃতীয় বর্ষ)", phone: "+8801920823710", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
                   {name: "তাহমিনা আক্তার", birth: "", death: "", gender: "female", occupation: "গৃহিণী", education: "মাধ্যমিক", phone: "অজানা", address: "",},
                   {name: "আসমাউল হোসনা", birth: "", death: "", gender: "female", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (প্রথম বর্ষ)", phone: "অজানা", address: "",},
                 ]},
@@ -145,7 +145,7 @@ const familyData = {
               children: [
             {name: "ফাহমিদা ইয়াসমিন", birth: "", death: "", gender: "female", occupation: "সাবেক সিনিয়র অফিসার, সোনালী ব্যাংক | শিক্ষক", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
             {name: "ইশরাত সাদিয়া", birth: "", death: "", gender: "female", occupation: "শিক্ষক", education: "", phone: "", address: "",},
-            {name: "তাহমিদুর রহমান তন্ময়", birth: "০৭ এপ্রিল, ২০০২", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নতক সম্মান (অধ্যয়নরত)", phone: "+8801404-529824", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
+            {name: "তাহমিদুর রহমান তন্ময়", birth: "০৭ এপ্রিল, ২০০২", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নতক সম্মান (অধ্যয়নরত)", phone: "+8801404-529824", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo:"photos/tonmoy.jpg"},
           ]},
               {name: "মুঞ্জুরুল ফকির", birth: "অজানা", death: "", gender: "male", occupation: "কৃষক", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",
               children: [
