@@ -80,7 +80,7 @@ const familyData = {
                 ]},
               {name: "মোঃ বকুল হোসেন", birth: "৩০ জুন, ১৯৭১", death: "", gender: "male", occupation: "কৃষি", education: "প্রাতিষ্ঠানিক শিক্ষা নেই!", phone: "+8801924421069", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", 
                   children: [              
-                  {name: "মোঃ আমির হামজা", birth: "০১ ফেব্রুয়ারি, ২০০৪", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (তৃতীয় বর্ষ)", phone: "+8801920823710", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
+                  {name: "মোঃ আমির হামজা", birth: "০১ ফেব্রুয়ারি, ২০০৪", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (তৃতীয় বর্ষ)", phone: "+8801920823710", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/amir.jpg"},
                   {name: "তাহমিনা আক্তার", birth: "", death: "", gender: "female", occupation: "গৃহিণী", education: "মাধ্যমিক", phone: "অজানা", address: "",},
                   {name: "আসমাউল হোসনা", birth: "", death: "", gender: "female", occupation: "শিক্ষার্থী", education: "স্নাতক পাস (প্রথম বর্ষ)", phone: "অজানা", address: "",},
                 ]},
@@ -560,11 +560,12 @@ const familyData = {
 const siteCredits = {
   intro: "এই বংশলতিকা পরিবারের সদস্যদের সম্মিলিত তথ্য ও স্মৃতির ভিত্তিতে তৈরি। কোনো তথ্য ভুল বা অসম্পূর্ণ থাকলে সম্পাদকের সাথে যোগাযোগ করুন।",
   editors: [
-    { name: "সম্পাদকের নাম", role: "সংকলক ও সম্পাদক", info: "বংশলতিকা প্রস্তুত ও সম্পাদনা", photo: "photos/amir.jpg" }
+    { name: "মোঃ আমির হামজা", role: "সংকলক ও সম্পাদক", info: "বংশলতিকা প্রস্তুত ও সম্পাদনা", photo: "photos/amir.jpg" }
   ],
   contributors: [
-    { name: "তথ্যদাতার নাম ১", role: "তথ্যদাতা", info: "হানিফ ফকিরের শাখার তথ্য", photo: "photos/contributor1.jpg" },
-    { name: "তথ্যদাতার নাম ২", role: "তথ্যদাতা", info: "শহর ফকিরের শাখার তথ্য", photo: "photos/contributor2.jpg" }
+    { name: "মোঃ বকুল হোসেন", role: "তথ্যদাতা", info: "পুরো তালিকা করতে সর্বোচ্চ সহযোগিতা করেছেন, photo: "photos/md-bakul-hossain.jpg" },
+    { name: "সাব্বির আহমেদ", role: "তথ্যদাতা", info: "৩ থেকে ৪টি শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/sabbir.jpg" },
+    { name: "তাহমিদ তন্ময়", role: "তথ্যদাতা", info: "তার পরিবার ও শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/tonmoy.jpg" }
   ]
 };
 
