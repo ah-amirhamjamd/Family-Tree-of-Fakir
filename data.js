@@ -136,7 +136,7 @@ const familyData = {
                   children: [
                   {name: "ওমাইজা ইসলাম সিনফা", birth: "", death: "", gender: "female", occupation: "", education: "", phone: "", address: "",},
                   ]},
-                  {name: "মোঃ অহিদুল হাসান সাকিব", birth: "০৩ মার্চ, ২০০৩", death: "", gender: "male", occupation: "সৈনিক", education: "স্নাতক (অধ্যয়নরত)", phone: "+8801812-403585", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},                  
+                  {name: "মোঃ অহিদুল হাসান সাকিব", birth: "০৩ মার্চ, ২০০৩", death: "", gender: "male", occupation: "সৈনিক", education: "স্নাতক (অধ্যয়নরত)", phone: "+8801812-403585", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।", photo: "photos/whedul-hasan-shakib.jpg",},
                   ]},
               ]},
         {name: "ইদ্দিছ ফকির", birth: "অজানা", death: "অজানা", gender: "male", occupation: "কৃষি", education: "অজানা", phone: "অজানা", address: "অজানা",
@@ -567,6 +567,7 @@ const siteCredits = {
     { name: "সাব্বির আহমেদ", role: "তথ্যদাতা", info: "৩ থেকে ৪টি শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/sabbir.jpg" },
     { name: "তাহমিদ তন্ময়", role: "তথ্যদাতা", info: "তার পরিবার ও শাখার তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/tonmoy.jpg" },
     { name: "জাহানারা খাতুন", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/zahanara-khatun.jpg"},
+    { name: "মোঃ অহিদুল হাসান সাকিব", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/whedul-hasan-shakib.jpg"},
     { name: "মোঃ মুশফিকুর রহমান সানি", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/sunny.jpg" },
     { name: "তানভীর ফাহাদ (শরীফ)", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/tanvir-fahad.jpg" },
     { name: "শাকিল আহমেদ", role: "তথ্যদাতা", info: "তার পরিবারের তথ্য দিয়ে সহযোগিতা করেছেন", photo: "photos/shakil.jpg" },
