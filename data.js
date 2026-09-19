@@ -559,8 +559,16 @@ const familyData = {
    নিচের নামগুলো নমুনা — আপনাদের আসল নাম দিয়ে বদলান। তথ্যদাতা যত খুশি যোগ করতে পারেন। */
 const siteCredits = {
   intro: "এই বংশলতিকা পরিবারের সদস্যদের সম্মিলিত তথ্য ও স্মৃতির ভিত্তিতে তৈরি। কোনো তথ্য ভুল বা অসম্পূর্ণ থাকলে সম্পাদকের সাথে যোগাযোগ করুন।",
-  editors: [
-    { name: "মোঃ আমির হামজা", role: "সংকলক ও সম্পাদক", info: "বংশলতিকা প্রস্তুত ও সম্পাদনা", photo: "photos/amir.jpg" }
+    editors: [
+    { name: "সম্পাদকের নাম", role: "সংকলক ও সম্পাদক",
+      info: "বংশলতিকা প্রস্তুত ও সম্পাদনা", photo: "photos/editor.jpg",
+      contact: {
+        phone:    "+8801920823710",
+        whatsapp: "8801920823710",
+        email:    "hello.amirhamja@gmail.com",
+        facebook: "https://www.facebook.com/ah.amirhamjamd/"
+      }
+    }
   ],
   contributors: [
     { name: "মোঃ বকুল হোসেন", role: "তথ্যদাতা", info: "পুরো তালিকা করতে সর্বোচ্চ সহযোগিতা করেছেন", photo: "photos/md-bakul-hossain.jpg" },
