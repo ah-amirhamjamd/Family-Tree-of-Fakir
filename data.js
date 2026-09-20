@@ -222,7 +222,7 @@ const familyData = {
                       ]},
                     {name: "নাজমুল ইসলাম", birth: "অজানা", death: "", gender: "male", occupation: "চাকরিজীবী", education: "", phone: "01926-212801", address: "আফতাবনগর, বাড্ডা, ঢাকা (উত্তর)-1212, ঢাকা",
                       children: [
-                        {name: "নওসিন", birth: "অজানা", death: "অজানা", gender: "female", occupation: "", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
+                        {name: "নওসিন", birth: "অজানা", death: "", gender: "female", occupation: "", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
                         {name: "মুগ্ধ", birth: "অজানা", death: "", gender: "male", occupation: "", education: "", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
                       ]},
                     {name: "রিয়াদ", birth: "অজানা", death: "", gender: "male", occupation: "শিক্ষার্থী", education: "স্নাতকোত্তর (অধ্যয়নরত)", phone: "", address: "সাইলামপুর, বিবির চর-২১৫০, ওর্য়ার্ড: ০৮, নকলা, শেরপুর।",},
